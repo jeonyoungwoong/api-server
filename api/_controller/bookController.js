@@ -8,7 +8,7 @@ const moment = require("../../util/moment");
 const getTotal = async () => {
   // const getTotal = async function () {
   try {
-    const query = `SELECT COUNT(*) AS cnt FROM ${TABLE.EXERCISE}`;
+    const query = `SELECT COUNT(*) AS cnt FROM ${TABLE.BOOK}`;
     const [[{ cnt }]] = await db.execute(query);
     return cnt;
   } catch (e) {
@@ -21,7 +21,7 @@ const getTotal = async () => {
 const getSelectOne = async (id) => {
   // const getTotal = async function () {
   try {
-    const query = `SELECT COUNT(*) AS cnt FROM ${TABLE.EXERCISE} WHERE id=?`;
+    const query = `SELECT COUNT(*) AS cnt FROM ${TABLE.BOOK} WHERE id=?`;
     const values = [id];
     const [[{ cnt }]] = await db.execute(query, values);
     return cnt;
@@ -43,7 +43,7 @@ const getList = async (req) => {
       // 0은 false
       where = `WHERE id < ${lastId}`;
     }
-    const query = `SELECT * FROM ${TABLE.EXERCISE} ${where} order by id desc limit 0, ${len}`;
+    const query = `SELECT * FROM ${TABLE.BOOK} ${where} order by id desc limit 0, ${len}`;
     const [rows] = await db.execute(query);
     return rows;
   } catch (e) {
@@ -52,17 +52,17 @@ const getList = async (req) => {
   }
 };
 
-const exerciseController = {
+const bookController = {
   // insert
   create: async (req) => {
-    const { name, reps } = req.body;
-    if (isEmpty(name) || isEmpty(reps)) {
+    const { name, quantity } = req.body;
+    if (isEmpty(name) || isEmpty(quantity)) {
       return resData(STATUS.E100.result, STATUS.E100.resultDesc, moment().format('LT'));
     }
 
     try {
-      const query = `INSERT INTO exercise (name, reps) VALUES (?,?)`;
-      const values = [name, reps];
+      const query = `INSERT INTO book (name, quantity) VALUES (?,?)`;
+      const values = [name, quantity];
       const [rows] = await db.execute(query, values);
       console.log(rows)
       if (rows.affectedRows == 1) {
@@ -98,14 +98,14 @@ const exerciseController = {
   //update
   update: async (req) => {
     const { id } = req.params; // url /로 들어오는것
-    const { name, reps } = req.body;
-    if (isEmpty(id) || isEmpty(name) || isEmpty(reps)) {
+    const { name, quantity } = req.body;
+    if (isEmpty(id) || isEmpty(name) || isEmpty(quantity)) {
       return resData(STATUS.E100.result, STATUS.E100.resultDesc, moment().format('LT'));
     }
 
     try {
-      const query = `UPDATE ${TABLE.EXERCISE} SET name =?, reps =? WHERE id= ?`;
-      const values = [name, reps, id];
+      const query = `UPDATE ${TABLE.BOOK} SET name =?, quantity =? WHERE id= ?`;
+      const values = [name, quantity, id];
       const [rows] = await db.execute(query, values);
       if (rows.affectedRows == 1) {
         return resData(
@@ -135,7 +135,7 @@ const exerciseController = {
           moment().format('LT')
         );
       }
-      const query = `DELETE FROM ${TABLE.EXERCISE} WHERE id = ?;`;
+      const query = `DELETE FROM ${TABLE.BOOK} WHERE id = ?;`;
       const values = [id];
       const [rows] = await db.execute(query, values);
       if (rows.affectedRows == 1) {
@@ -155,4 +155,4 @@ const exerciseController = {
   
 };
 
-module.exports = exerciseController;
+module.exports = bookController;
