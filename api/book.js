@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const exerciseController = require('./_controller/bookController');
+const bookController = require('./_controller/bookController');
 
 // insert
 router.post("/", async (req, res) => {
